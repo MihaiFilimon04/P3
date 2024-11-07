@@ -1,35 +1,47 @@
-class Rental {
-    // class B
-    Movie movie;
-    Customer[] customers; // array of customers renting the movie
-    String rentalDate;
+// Rental.java (Modified)
+public class Rental implements Rentable {
+    private Movie movie;
+    private Customer[] customers;
+    private int currentCustomers = 0;
 
-
-    public Rental(Movie movie, Customer[] customers, String rentalDate) {  // constructor for Rental
+    public Rental(Movie movie, int maxCustomers) {
         this.movie = movie;
-        this.customers = customers;
-        this.rentalDate = rentalDate;
-    }
-    public void printRentalDetails() {
-        System.out.println("Movie Title: " + movie.getTitle());
-        System.out.println("Genre: " + movie.getGenre());
-        System.out.println("Rental Date: " + rentalDate);
-        System.out.println("Customers who rented this movie:");
-        for (Customer customer : customers) {
-            System.out.println("- " + customer.getName() + " (Rented: " + customer.hasRented() + ")");
-        }
+        this.customers = new Customer[maxCustomers];
     }
 
+    @Override
+    public void rent() {
+        System.out.println("Renting movie: " + movie.getTitle());
+    }
+
+    @Override
+    public void printRentalDetails() {
+
+    }
+
+    public boolean addCustomer(Customer customer) {
+        if (currentCustomers < customers.length) {
+            customers[currentCustomers++] = customer;
+            return true;
+        }
+        return false;
+    }
+
+    public boolean isAvailable() {
+        return currentCustomers < customers.length;
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder details = new StringBuilder("Rental{" + "movie=" + movie + ", customers=[");
+        for (int i = 0; i < currentCustomers; i++) {
+            details.append(customers[i].toString());
+            if (i < currentCustomers - 1) details.append(", ");
+        }
+        details.append("]}");
+        return details.toString();
+    }
 
     public void returnMovie() {
-        if (!movie.isAvailable()) {
-            movie.setAvailable(true); // Movie is now available
-            for (Customer customer : customers) {
-                customer.setHasRented(false); // Reset customer's rental status
-            }
-            System.out.println("Movie " + movie.getTitle() + " has been returned.");
-        } else {
-            System.out.println("Movie " + movie.getTitle() + " is already available.");
-        }
     }
 }
